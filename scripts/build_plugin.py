@@ -12,6 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / ".codex-plugin" / "plugin.json"
 DIST = ROOT / "dist"
+SKILL_FILES = ("SKILL.md", "eval.md", "research.md", "tests.md")
 
 
 def parse_args() -> argparse.Namespace:
@@ -55,12 +56,42 @@ def validate_source(manifest: dict) -> None:
         )
 
     for source in (
-        ROOT / "SKILL.md",
-        ROOT / "eval.md",
+        *(ROOT / name for name in SKILL_FILES),
+        ROOT / "agents" / "openai.yaml",
         ROOT / "assets" / "no-ai-slop-cn.png",
+        ROOT / "LICENSE",
+        ROOT / "PRIVACY.md",
+        ROOT / "TERMS.md",
     ):
         if not source.is_file():
             raise SystemExit(f"缺少插件源文件：{source.relative_to(ROOT)}")
+
+    skill_text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    if len(skill_text.splitlines()) >= 500:
+        raise SystemExit("SKILL.md 必须少于 500 行")
+    if not skill_text.startswith("---\nname: no-ai-slop-cn\n"):
+        raise SystemExit("SKILL.md 的名称或 YAML 前置信息无效")
+    if f'version: "{manifest["version"]}"' not in skill_text:
+        raise SystemExit("SKILL.md 与插件清单的版本号不一致")
+    for reference in ("[research.md](research.md)", "[tests.md](tests.md)"):
+        if reference not in skill_text:
+            raise SystemExit(f"SKILL.md 未引用配套文件：{reference}")
+
+    tests_text = (ROOT / "tests.md").read_text(encoding="utf-8")
+    missing_cases = [
+        heading
+        for heading in (
+            *(f"### {number}." for number in range(1, 31)),
+            *(f"### R{number}." for number in range(1, 9)),
+        )
+        if heading not in tests_text
+    ]
+    if missing_cases:
+        raise SystemExit(f"回归测试缺少用例：{', '.join(missing_cases)}")
+
+    research_text = (ROOT / "research.md").read_text(encoding="utf-8")
+    if research_text.count("https://") < 10:
+        raise SystemExit("research.md 至少需要十个可核对的来源链接")
 
 
 def build_plugin(manifest: dict) -> tuple[Path, Path]:
@@ -72,10 +103,15 @@ def build_plugin(manifest: dict) -> tuple[Path, Path]:
     (plugin_root / ".codex-plugin").mkdir(parents=True)
     (plugin_root / "assets").mkdir(parents=True)
     skill_root.mkdir(parents=True)
+    (skill_root / "agents").mkdir()
 
     shutil.copy2(MANIFEST, plugin_root / ".codex-plugin" / "plugin.json")
-    shutil.copy2(ROOT / "SKILL.md", skill_root / "SKILL.md")
-    shutil.copy2(ROOT / "eval.md", skill_root / "eval.md")
+    for name in SKILL_FILES:
+        shutil.copy2(ROOT / name, skill_root / name)
+    shutil.copy2(
+        ROOT / "agents" / "openai.yaml",
+        skill_root / "agents" / "openai.yaml",
+    )
     shutil.copy2(
         ROOT / "assets" / "no-ai-slop-cn.png",
         plugin_root / "assets" / "no-ai-slop-cn.png",
@@ -99,7 +135,10 @@ def validate_build(plugin_root: Path, archive: Path) -> None:
         ".codex-plugin/plugin.json",
         "assets/no-ai-slop-cn.png",
         "skills/no-ai-slop-cn/SKILL.md",
+        "skills/no-ai-slop-cn/agents/openai.yaml",
         "skills/no-ai-slop-cn/eval.md",
+        "skills/no-ai-slop-cn/research.md",
+        "skills/no-ai-slop-cn/tests.md",
         "LICENSE",
         "PRIVACY.md",
         "TERMS.md",
@@ -115,25 +154,47 @@ def validate_build(plugin_root: Path, archive: Path) -> None:
             f"实际为 {sorted(actual)}"
         )
 
-    packaged_skill = plugin_root / "skills" / "no-ai-slop-cn" / "SKILL.md"
-    packaged_eval = plugin_root / "skills" / "no-ai-slop-cn" / "eval.md"
-    if packaged_skill.read_bytes() != (ROOT / "SKILL.md").read_bytes():
-        raise SystemExit("插件中的 SKILL.md 与规范源文件不一致")
-    if packaged_eval.read_bytes() != (ROOT / "eval.md").read_bytes():
-        raise SystemExit("插件中的 eval.md 与规范源文件不一致")
+    skill_root = plugin_root / "skills" / "no-ai-slop-cn"
+    for name in SKILL_FILES:
+        if (skill_root / name).read_bytes() != (ROOT / name).read_bytes():
+            raise SystemExit(f"插件中的 {name} 与规范源文件不一致")
+    if (skill_root / "agents" / "openai.yaml").read_bytes() != (
+        ROOT / "agents" / "openai.yaml"
+    ).read_bytes():
+        raise SystemExit("插件中的 agents/openai.yaml 与规范源文件不一致")
     if not zipfile.is_zipfile(archive):
         raise SystemExit("插件压缩包不是有效的 ZIP 文件")
+    with zipfile.ZipFile(archive) as packaged:
+        archived = set(packaged.namelist())
+        damaged = packaged.testzip()
+    if damaged is not None:
+        raise SystemExit(f"压缩包中的文件校验失败：{damaged}")
+    expected_archive = {f"no-ai-slop-cn/{path}" for path in expected}
+    if archived != expected_archive:
+        raise SystemExit(
+            f"压缩包内容不符合预期：应为 {sorted(expected_archive)}，"
+            f"实际为 {sorted(archived)}"
+        )
 
 
 def main() -> None:
     args = parse_args()
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     validate_source(manifest)
-    plugin_root, archive = build_plugin(manifest)
-    validate_build(plugin_root, archive)
-    print(f"已构建 {archive.relative_to(ROOT)}")
-    if args.check:
-        shutil.rmtree(DIST)
+    plugin_root = DIST / "no-ai-slop-cn"
+    archive = DIST / f"no-ai-slop-cn-plugin-{manifest['version']}.zip"
+    try:
+        plugin_root, archive = build_plugin(manifest)
+        validate_build(plugin_root, archive)
+        print(f"已构建 {archive.relative_to(ROOT)}")
+    finally:
+        if args.check:
+            if plugin_root.exists():
+                shutil.rmtree(plugin_root)
+            if archive.exists():
+                archive.unlink()
+            if DIST.exists() and not any(DIST.iterdir()):
+                DIST.rmdir()
 
 
 if __name__ == "__main__":

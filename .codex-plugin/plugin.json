@@ -1,6 +1,6 @@
 {
   "name": "no-ai-slop-cn",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "删除中文写作中的 AI 腔、空话和机械表达，同时保留作者的个人声音。",
   "author": {
     "name": "qCanoe",
@@ -19,20 +19,22 @@
   "interface": {
     "displayName": "No AI Slop 中文版",
     "shortDescription": "删掉 AI 腔，保留你的声音。",
-    "longDescription": "面向中文写作的编辑与检测技能。它处理二元对立、伪洞察、公文套话、四字词堆叠、万能升华、机械排比、中英术语装饰等模式，同时尽量保留作者原有的用词、节奏和判断。\n\n本项目基于 Peter Yang 的 no-ai-slop 改编，并针对中文表达重新设计规则与自检项。",
+    "longDescription": "面向中文写作的编辑与检测技能。它按模式组合和上下文识别 40 多种空泛、虚高、模板化或机械表达，并针对公文、技术、学术、营销、个人、社交和文学文本调整修改力度。\n\n本项目基于 Peter Yang 的 no-ai-slop 改编，并结合中文语言研究、文字规范与开源项目重新设计规则、自检和回归测试。",
     "developerName": "qCanoe",
     "category": "Productivity",
     "capabilities": [
       "编辑中文草稿",
       "检测 AI 腔",
-      "保留个人声音"
+      "保留个人声音",
+      "适配中文文体"
     ],
     "websiteURL": "https://github.com/qCanoe/no-ai-slop-cn",
     "privacyPolicyURL": "https://github.com/qCanoe/no-ai-slop-cn/blob/main/PRIVACY.md",
     "termsOfServiceURL": "https://github.com/qCanoe/no-ai-slop-cn/blob/main/TERMS.md",
     "defaultPrompt": [
       "编辑这段中文，删掉 AI 腔但保留我的语气",
-      "检查这段文字有哪些 AI 腔，不要改写"
+      "检查这段文字有哪些 AI 腔，不要改写",
+      "深度重写这篇中文，保留事实并打散模板结构"
     ],
     "brandColor": "#C62828",
     "composerIcon": "./assets/no-ai-slop-cn.png",

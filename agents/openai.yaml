@@ -1,4 +1,4 @@
 interface:
   display_name: "/no-ai-slop-cn"
-  short_description: "删除中文 AI 腔，同时保留作者的个人声音。"
-  default_prompt: "使用 $no-ai-slop-cn 编辑这段中文草稿，删除 AI 写作模式并保留我的个人语气。"
+  short_description: "按文体删除中文 AI 腔，同时保留作者声音。"
+  default_prompt: "使用 $no-ai-slop-cn 按上下文编辑这段中文草稿，删除集中出现的 AI 写作模式并保留我的个人语气和事实。"
