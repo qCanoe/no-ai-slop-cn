@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build and validate the distributable No AI Slop CN plugin archive."""
+"""构建并校验可分发的 No AI Slop 中文版插件压缩包。"""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--check",
         action="store_true",
-        help="Validate without keeping build output",
+        help="执行校验，但不保留构建产物",
     )
     return parser.parse_args()
 
@@ -28,7 +28,7 @@ def validate_source(manifest: dict) -> None:
     required = ("name", "version", "description", "author", "skills", "interface")
     missing = [key for key in required if not manifest.get(key)]
     if missing:
-        raise SystemExit(f"Missing manifest fields: {', '.join(missing)}")
+        raise SystemExit(f"插件清单缺少字段：{', '.join(missing)}")
 
     interface = manifest["interface"]
     interface_required = (
@@ -45,14 +45,13 @@ def validate_source(manifest: dict) -> None:
     ]
     if missing_interface:
         raise SystemExit(
-            f"Missing interface fields: {', '.join(missing_interface)}"
+            f"插件界面配置缺少字段：{', '.join(missing_interface)}"
         )
 
     prompts = interface["defaultPrompt"]
     if len(prompts) > 3 or any(len(prompt) > 128 for prompt in prompts):
         raise SystemExit(
-            "Starter prompts must contain at most three entries "
-            "of 128 characters or fewer"
+            "初始提示最多三条，每条不得超过 128 个字符"
         )
 
     for source in (
@@ -61,7 +60,7 @@ def validate_source(manifest: dict) -> None:
         ROOT / "assets" / "no-ai-slop-cn.png",
     ):
         if not source.is_file():
-            raise SystemExit(f"Missing package source: {source.relative_to(ROOT)}")
+            raise SystemExit(f"缺少插件源文件：{source.relative_to(ROOT)}")
 
 
 def build_plugin(manifest: dict) -> tuple[Path, Path]:
@@ -112,18 +111,18 @@ def validate_build(plugin_root: Path, archive: Path) -> None:
     }
     if expected != actual:
         raise SystemExit(
-            f"Unexpected package files: expected {sorted(expected)}, "
-            f"found {sorted(actual)}"
+            f"插件文件不符合预期：应为 {sorted(expected)}，"
+            f"实际为 {sorted(actual)}"
         )
 
     packaged_skill = plugin_root / "skills" / "no-ai-slop-cn" / "SKILL.md"
     packaged_eval = plugin_root / "skills" / "no-ai-slop-cn" / "eval.md"
     if packaged_skill.read_bytes() != (ROOT / "SKILL.md").read_bytes():
-        raise SystemExit("Packaged SKILL.md does not match the canonical file")
+        raise SystemExit("插件中的 SKILL.md 与规范源文件不一致")
     if packaged_eval.read_bytes() != (ROOT / "eval.md").read_bytes():
-        raise SystemExit("Packaged eval.md does not match the canonical file")
+        raise SystemExit("插件中的 eval.md 与规范源文件不一致")
     if not zipfile.is_zipfile(archive):
-        raise SystemExit("Plugin archive is not a valid ZIP file")
+        raise SystemExit("插件压缩包不是有效的 ZIP 文件")
 
 
 def main() -> None:
@@ -132,7 +131,7 @@ def main() -> None:
     validate_source(manifest)
     plugin_root, archive = build_plugin(manifest)
     validate_build(plugin_root, archive)
-    print(f"Built {archive.relative_to(ROOT)}")
+    print(f"已构建 {archive.relative_to(ROOT)}")
     if args.check:
         shutil.rmtree(DIST)
 

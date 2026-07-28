@@ -8,10 +8,10 @@ No AI Slop 中文版删除中文写作中常见的 AI 腔、空话、套话和�
 
 ## 可验证信息
 
-- 原项目使用 MIT License。
+- 原项目使用 MIT 许可证。
 - 中文版不运行外部服务，不需要账户或认证。
-- `SKILL.md` 是规范编辑规则，`eval.md` 是同一 Agent 使用的自检清单。
-- `scripts/build_plugin.py` 会校验插件源文件、清单和 ZIP 内容是否一致。
+- `SKILL.md` 是规范编辑规则，`eval.md` 是同一智能体使用的自检清单。
+- `scripts/build_plugin.py` 会校验插件源文件、清单和压缩包内容是否一致。
 
 ## 初始提示
 

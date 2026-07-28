@@ -1,6 +1,6 @@
 # No AI Slop 中文版
 
-这是一个面向中文写作的开源 Agent Skill。它会删除或改写中文文本中常见的 AI 腔，同时尽量保留作者原有的用词、节奏、情绪和判断。
+这是一个面向中文写作的开源智能体技能（Agent Skill）。它会删除或改写中文文本中常见的 AI 腔，同时尽量保留作者原有的用词、节奏、情绪和判断。
 
 本项目基于 Peter Yang 的 [no-ai-slop](https://github.com/petergyang/no-ai-slop) 改编，并针对中文语境新增了公文套话、四字词堆叠、万能升华、排比过载、短视频钩子、中英术语装饰等模式。项目遵循原仓库的双模式工作流、最小有效编辑原则和自检机制。
 
@@ -27,13 +27,13 @@
 
 ## 安装
 
-把下面这句话粘贴到 Cursor、Claude Code、Codex 或其他支持 Agent Skill 的工具中：
+把下面这句话粘贴到 Cursor、Claude Code、Codex 或其他支持智能体技能的工具中：
 
 ```text
-请全局安装这个 skill：https://github.com/qCanoe/no-ai-slop-cn
+请将这个智能体技能安装到全局：https://github.com/qCanoe/no-ai-slop-cn
 ```
 
-也可以手动将仓库中的 `SKILL.md` 和 `eval.md` 放入工具支持的 skill 目录。
+也可以手动将仓库中的 `SKILL.md` 和 `eval.md` 放入工具支持的技能目录。
 
 ## 使用
 
@@ -47,7 +47,7 @@
 [你的草稿]
 ```
 
-Skill 会返回完整修改稿和简短的“修改说明”。它只做必要修改，并在输出前按 `eval.md` 自检。
+该技能会返回完整修改稿和简短的“修改说明”。它只做必要修改，并在输出前按 `eval.md` 自检。
 
 ### 2. 只检测 AI 腔
 
@@ -57,14 +57,14 @@ Skill 会返回完整修改稿和简短的“修改说明”。它只做必要�
 [待检查文本]
 ```
 
-Skill 会逐项列出命中的模式、引用原句，并给出简短修改方向。它不会猜测文本是否由 AI 生成。
+该技能会逐项列出命中的模式、引用原句，并给出简短修改方向。它不会猜测文本是否由 AI 生成。
 
 ## 文件
 
 1. `SKILL.md`：中文编辑规则、检测模式和工作流。
-2. `eval.md`：Skill 对编辑结果执行的通过/失败检查。
+2. `eval.md`：技能对编辑结果执行的通过/失败检查。
 3. `.codex-plugin/plugin.json`：ChatGPT 和 Codex 插件元数据。
-4. `scripts/build_plugin.py`：从规范源文件构建并校验插件 ZIP。
+4. `scripts/build_plugin.py`：从规范源文件构建并校验插件压缩包。
 
 ## 设计原则
 
@@ -78,4 +78,4 @@ Skill 会逐项列出命中的模式、引用原句，并给出简短修改方�
 
 本项目是 [petergyang/no-ai-slop](https://github.com/petergyang/no-ai-slop) 的独立中文改编版，不代表原作者维护或背书。
 
-原项目与本项目均使用 [MIT License](LICENSE)。
+原项目与本项目均使用 [MIT 许可证](LICENSE)。许可文件先提供中文参考译文，并保留具有法律效力的英文原文。

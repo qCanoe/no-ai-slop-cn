@@ -10,16 +10,16 @@
   "repository": "https://github.com/qCanoe/no-ai-slop-cn",
   "license": "MIT",
   "keywords": [
-    "Chinese writing",
-    "editing",
-    "voice",
-    "AI slop"
+    "中文写作",
+    "编辑",
+    "个人声音",
+    "AI 腔"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "No AI Slop 中文版",
     "shortDescription": "删掉 AI 腔，保留你的声音。",
-    "longDescription": "面向中文写作的编辑与检测 Skill。它处理二元对立、伪洞察、公文套话、四字词堆叠、万能升华、机械排比、中英术语装饰等模式，同时尽量保留作者原有的用词、节奏和判断。\n\n本项目基于 Peter Yang 的 no-ai-slop 改编，并针对中文表达重新设计规则与自检项。",
+    "longDescription": "面向中文写作的编辑与检测技能。它处理二元对立、伪洞察、公文套话、四字词堆叠、万能升华、机械排比、中英术语装饰等模式，同时尽量保留作者原有的用词、节奏和判断。\n\n本项目基于 Peter Yang 的 no-ai-slop 改编，并针对中文表达重新设计规则与自检项。",
     "developerName": "qCanoe",
     "category": "Productivity",
     "capabilities": [
