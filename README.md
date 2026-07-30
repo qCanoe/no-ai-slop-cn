@@ -32,7 +32,7 @@
 请将这个技能安装到全局：https://github.com/qCanoe/no-ai-slop-cn
 ```
 
-也可以把整个仓库放入工具支持的技能目录。最少需要保留 `SKILL.md`、`eval.md`、`research.md`、`tests.md` 和 `agents/openai.yaml`，并维持相对路径不变。
+也可以把整个仓库放入工具支持的技能目录。最少需要保留 `SKILL.md`、`eval.md`、`tests.md` 和 `agents/openai.yaml`，并维持相对路径不变。
 
 ## 使用
 
@@ -67,10 +67,9 @@
 
 1. `SKILL.md`：中文编辑规则、检测模式和工作流。
 2. `eval.md`：技能对编辑结果执行的通过/失败检查。
-3. `research.md`：研究依据、适用边界和参考来源。
-4. `tests.md`：30 个覆盖场景和 8 个固定回归样例。
-5. `.codex-plugin/plugin.json`：ChatGPT 和 Codex 插件元数据。
-6. `scripts/build_plugin.py`：从规范源文件构建并校验插件压缩包。
+3. `tests.md`：30 个覆盖场景和 8 个固定回归样例。
+4. `.codex-plugin/plugin.json`：ChatGPT 和 Codex 插件元数据。
+5. `scripts/build_plugin.py`：从规范源文件构建并校验插件压缩包。
 
 ## 来源与许可
 

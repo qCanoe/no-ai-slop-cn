@@ -12,7 +12,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST = ROOT / ".codex-plugin" / "plugin.json"
 DIST = ROOT / "dist"
-SKILL_FILES = ("SKILL.md", "eval.md", "research.md", "tests.md")
+SKILL_FILES = ("SKILL.md", "eval.md", "tests.md")
 
 
 def parse_args() -> argparse.Namespace:
@@ -73,7 +73,7 @@ def validate_source(manifest: dict) -> None:
         raise SystemExit("SKILL.md 的名称或 YAML 前置信息无效")
     if f'version: "{manifest["version"]}"' not in skill_text:
         raise SystemExit("SKILL.md 与插件清单的版本号不一致")
-    for reference in ("[research.md](research.md)", "[tests.md](tests.md)"):
+    for reference in ("[tests.md](tests.md)",):
         if reference not in skill_text:
             raise SystemExit(f"SKILL.md 未引用配套文件：{reference}")
 
@@ -88,10 +88,6 @@ def validate_source(manifest: dict) -> None:
     ]
     if missing_cases:
         raise SystemExit(f"回归测试缺少用例：{', '.join(missing_cases)}")
-
-    research_text = (ROOT / "research.md").read_text(encoding="utf-8")
-    if research_text.count("https://") < 10:
-        raise SystemExit("research.md 至少需要十个可核对的来源链接")
 
 
 def build_plugin(manifest: dict) -> tuple[Path, Path]:
@@ -137,7 +133,6 @@ def validate_build(plugin_root: Path, archive: Path) -> None:
         "skills/no-ai-slop-cn/SKILL.md",
         "skills/no-ai-slop-cn/agents/openai.yaml",
         "skills/no-ai-slop-cn/eval.md",
-        "skills/no-ai-slop-cn/research.md",
         "skills/no-ai-slop-cn/tests.md",
         "LICENSE",
         "PRIVACY.md",

@@ -200,5 +200,4 @@ metadata:
 
 ## 进一步资料
 
-- 研究依据、适用边界和参考来源见 [research.md](research.md)。
 - 代表性正反测试与回归要求见 [tests.md](tests.md)。
